@@ -19,6 +19,13 @@ ingestNestedDelay2(*srcColl, *project, *title, *mirthMetaDataUrl, *token) {
         setErrorAVU(*srcColl,"state", "error-ingestion","Error rsyncing ingest zone") ;
     }
 
+    # Send to ORU processor channel
+    # srv024 represents the azM-mirth
+    *error = errorcode(sendToORUProcessor("http://fhml-srv024.unimaas.nl:6667",*token,*project,*projectCollection));
+    if ( *error < 0 ) {
+        setErrorAVU(*srcColl,"state", "error-ingestion", "Error retrieving ORU") ;
+    }
+
     # Send metadata
     *error = errorcode(sendMetadata(*mirthMetaDataUrl,*project, *projectCollection));
 
